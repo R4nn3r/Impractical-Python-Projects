@@ -2,6 +2,8 @@ import sys
 import load_dictionary
 
 
+# not finished yet
+
 def main():
     """ How it works"""
     word = "ethiopia"
