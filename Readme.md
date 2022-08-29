@@ -1,4 +1,4 @@
-<h1><strong>PROJECT #2: FINDING PALINDROMES</strong></h1>
+<h1><strong>PROJECT #: Impractical Python Projects</strong></h1>
 
 <h2>The Objective</h2>
 
