@@ -21,13 +21,5 @@
     <li></li>
     <li></li>
     <li></li>
-    <li>If user Try again</li>
-    <ul>
-        <li>repeat</li>
-    </ul>
-    <li>If user quits</li>
-    <ul>
-        <li>end and quit</li>
-    </ul>
    
 </ul>
