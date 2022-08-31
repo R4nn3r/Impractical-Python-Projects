@@ -2,20 +2,13 @@ import sys
 import load_dictionary
 
 
-# not finished yet
+word_list = load_dictionary.load("2of12.txt")
+pali_list = []
 
-def main():
-    """ How it works"""
-    word = "ethiopia"
-    
-    # using slicing 
-    rev_word = word[::-1]
-    
-    if word == rev_word:
-        print("Palindrome detected")
-    else:
-        print("Not a palindrome.")
-    
-    
-if __name__=='__main__':
-    main()
+
+for word in word_list:
+    if len(word) > 1 and word == word[::-1]:
+        pali_list.append(word)
+
+print(f"\nNumber of palindromes found = {len(pali_list)}\n")
+print(pali_list)
