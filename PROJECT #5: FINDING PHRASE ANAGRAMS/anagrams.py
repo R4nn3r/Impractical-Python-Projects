@@ -6,17 +6,14 @@ start_time = time.time()
 
 
 def get_word():
-    ''' get a word from user make sure its a single word!'''
+    ''' get the name of the user!'''
     while True:
         try:
-            word = input("Enter a single word (no-space) to get its Anagrams: ")
-            for _ in word:
-                if _ == ' ':
-                    raise ValueError
-                else:
-                    return word
+            word = input("Enter Your Name to get its Anagrams: ")
+            return word
         except ValueError:
             sys.exit("Enter a single word (no-space) to get its Anagram!")
+    
 
 def get_anagram(word_list, users_word):
     """ Checking the users word against the list to find all the anagrams"""
@@ -39,9 +36,12 @@ def main():
     
 
     #display list of anagram list
-    for _ in get_anagram(word_list,users_word):
-        print("  ",_)
-    
+    if not get_anagram(word_list,users_word):
+        print(f"No anagram found for {users_word}: ")
+    else:
+        for _ in get_anagram(word_list,users_word):
+            print("  ",_)
+        
     
     end_time = time.time()
     print("Runtime for this program was {} seconds.".format(end_time - start_time))
