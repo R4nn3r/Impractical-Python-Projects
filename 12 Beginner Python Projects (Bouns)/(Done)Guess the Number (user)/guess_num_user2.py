@@ -12,7 +12,7 @@ def guess(x,list):
         return guess(x,list)
 
 def main():
-    num = int(input('Number to guess')
+    num = int(input('Number to guess'))
     r_y = int(input("Enter Highest bound: "))   
 
     list = []
