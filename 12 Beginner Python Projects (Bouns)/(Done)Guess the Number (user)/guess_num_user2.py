@@ -5,7 +5,6 @@ def get_random(list):
 
 def guess(x,list):
     g = get_random(list)
-    print(g)
     if x == g:
         return g
     else:
@@ -13,7 +12,7 @@ def guess(x,list):
         return guess(x,list)
 
 def main():
-    num = 4
+    num = int(input('Number to guess')
     r_y = int(input("Enter Highest bound: "))   
 
     list = []
@@ -22,7 +21,6 @@ def main():
 
     result = guess(num,list)
     print(f"Found the number {result} = {num}")
-    print(list)
 
 if __name__ == '__main__':
     main()

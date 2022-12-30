@@ -20,11 +20,9 @@ def main():
         else:
             list.remove(guess)
             guess = get_guess(list)
-            print(guess)
 
         
     print(f"Got it right: {guess} = {num} ")
-    print(list)
 
 if __name__ == '__main__':
     main()
