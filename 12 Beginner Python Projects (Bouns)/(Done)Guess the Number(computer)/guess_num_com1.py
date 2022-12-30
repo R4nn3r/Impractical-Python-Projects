@@ -8,10 +8,9 @@ def get_num():
 
 def start():
     if input("[Enter] to start the game [q] to quit.: ").lower() == "q":
-        return False
+        return False, 0
     else:
         random_num = get_num()
-        print(random_num)
         return True, random_num
         
 
@@ -26,11 +25,9 @@ def main():
         if num > random_num:
             count += 1
             print("It's Lower: ")
-            continue
         elif num < random_num:
             count += 1
             print("It's Higher: ")
-            continue
         else:
             count += 1
             print(f"You got it right in your {count} attempt number is {random_num} ")
