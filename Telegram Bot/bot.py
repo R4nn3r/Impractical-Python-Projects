@@ -1,70 +1,63 @@
-from telegram.ext.updater import Updater
-from telegram.update import Update
-from telegram.ext.callbackcontext import CallbackContext
-from telegram.ext.commandhandler import CommandHandler
-from telegram.ext.messagehandler import MessageHandler
-from telegram.ext.filters import Filters
-  
-updater = Updater("5689199294:AAHxCGU6LgWkJRHNr2DfyM5n9AMY9168nwQ",
-                  use_context=True)
-  
-  
-def start(update: Update, context: CallbackContext):
-    update.message.reply_text(
-        "Hello sir, Welcome to the Bot.Please write\
-        /help to see the commands available.")
-  
-def help(update: Update, context: CallbackContext):
-    update.message.reply_text("""Available Commands :-
-    /youtube - To get the youtube URL
-    /linkedin - To get the LinkedIn profile URL
-    /gmail - To get gmail URL
-    /geeks - To get the GeeksforGeeks URL""")
-  
-  
-def gmail_url(update: Update, context: CallbackContext):
-    update.message.reply_text(
-        "Your gmail link here (I am not\
-        giving mine one for security reasons)")
-  
-  
-def youtube_url(update: Update, context: CallbackContext):
-    update.message.reply_text("Youtube Link =>\
-    https://www.youtube.com/")
-  
-  
-def linkedIn_url(update: Update, context: CallbackContext):
-    update.message.reply_text(
-        "LinkedIn URL => \
-        https://www.linkedin.com/in/dwaipayan-bandyopadhyay-007a/")
-  
-  
-def geeks_url(update: Update, context: CallbackContext):
-    update.message.reply_text(
-        "GeeksforGeeks URL => https://www.geeksforgeeks.org/")
-  
-  
-def unknown(update: Update, context: CallbackContext):
-    update.message.reply_text(
-        "Sorry '%s' is not a valid command" % update.message.text)
-  
-  
-def unknown_text(update: Update, context: CallbackContext):
-    update.message.reply_text(
-        "Sorry I can't recognize you , you said '%s'" % update.message.text)
-  
-  
-updater.dispatcher.add_handler(CommandHandler('start', start))
-updater.dispatcher.add_handler(CommandHandler('youtube', youtube_url))
-updater.dispatcher.add_handler(CommandHandler('help', help))
-updater.dispatcher.add_handler(CommandHandler('linkedin', linkedIn_url))
-updater.dispatcher.add_handler(CommandHandler('gmail', gmail_url))
-updater.dispatcher.add_handler(CommandHandler('geeks', geeks_url))
-updater.dispatcher.add_handler(MessageHandler(Filters.text, unknown))
-updater.dispatcher.add_handler(MessageHandler(
-    Filters.command, unknown))  # Filters out unknown commands
-  
-# Filters out unknown messages.
-updater.dispatcher.add_handler(MessageHandler(Filters.text, unknown_text))
-  
-updater.start_polling()
+import os
+import telebot
+import yfinance as yf
+
+API_KEY = os.getenv('API_KEY')
+bot = telebot.TeleBot(API_KEY)
+
+@bot.message_handler(commands=['Greet'])
+def greet(message):
+  bot.reply_to(message, "Hey! How's it going?")
+
+@bot.message_handler(commands=['hello'])
+def hello(message):
+  bot.send_message(message.chat.id, "Hello!")
+
+@bot.message_handler(commands=['wsb'])
+def get_stocks(message):
+  response = ""
+  stocks = ['gme', 'amc', 'nok']
+  stock_data = []
+  for stock in stocks:
+    data = yf.download(tickers=stock, period='2d', interval='1d')
+    data = data.reset_index()
+    response += f"-----{stock}-----\n"
+    stock_data.append([stock])
+    columns = ['stock']
+    for index, row in data.iterrows():
+      stock_position = len(stock_data) - 1
+      price = round(row['Close'], 2)
+      format_date = row['Date'].strftime('%m/%d')
+      response += f"{format_date}: {price}\n"
+      stock_data[stock_position].append(price)
+      columns.append(format_date)
+    print()
+
+  response = f"{columns[0] : <10}{columns[1] : ^10}{columns[2] : >10}\n"
+  for row in stock_data:
+    response += f"{row[0] : <10}{row[1] : ^10}{row[2] : >10}\n"
+  response += "\nStock Data"
+  print(response)
+  bot.send_message(message.chat.id, response)
+
+def stock_request(message):
+  request = message.text.split()
+  if len(request) < 2 or request[0].lower() not in "price":
+    return False
+  else:
+    return True
+
+@bot.message_handler(func=stock_request)
+def send_price(message):
+  request = message.text.split()[1]
+  data = yf.download(tickers=request, period='5m', interval='1m')
+  if data.size > 0:
+    data = data.reset_index()
+    data["format_date"] = data['Datetime'].dt.strftime('%m/%d %I:%M %p')
+    data.set_index('format_date', inplace=True)
+    print(data.to_string())
+    bot.send_message(message.chat.id, data['Close'].to_string(header=False))
+  else:
+    bot.send_message(message.chat.id, "No data!?")
+
+bot.polling()
